@@ -137,7 +137,7 @@ class MustardUI_Property_MenuAdd(bpy.types.Operator):
         force_non_animatable = False
         try:
             if (prop.is_animatable or blender_custom_property) and not prop.type == "ENUM":
-                mustardui_add_driver(bone, rna, path, prop, prop_name)
+                mustardui_add_driver(sourceObj, rna, path, prop, prop_name)
             else:
                 force_non_animatable = True
         except:

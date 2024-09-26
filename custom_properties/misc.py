@@ -82,8 +82,8 @@ def mustardui_add_driver(obj, rna, path, prop, prop_name):
         var.name = 'mustardui_var'
         var.targets[0].id_type = "OBJECT"
         var.targets[0].id = obj
-        #var.targets[0].data_path = 'pose.bones["'+bone_name+'"]["' + prop_name + '"]'
-        var.targets[0].data_path = '["' + prop_name + '"]'
+        var.targets[0].data_path = 'pose.bones["'+bone_name+'"]["' + prop_name + '"]'
+        #var.targets[0].data_path = '["' + prop_name + '"]'
 
     # Array property
     else:
