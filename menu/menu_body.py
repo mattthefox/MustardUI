@@ -76,7 +76,7 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
                                  icon_only=True, emboss=False)
                 else:
                     if prop.prop_name in sourceObj.pose.bones["master"].keys():
-                        row.prop(obj, '["' + prop.prop_name + '"]', text="")
+                        row.prop(sourceObj, 'pose.bones["master"]["' + prop.prop_name + '"]', text="")
                     else:
                         row.prop(settings, 'custom_properties_error', icon="ERROR", text="", icon_only=True,
                                  emboss=False)
