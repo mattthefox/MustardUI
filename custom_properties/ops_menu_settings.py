@@ -119,7 +119,7 @@ class MustardUI_Property_Settings(bpy.types.Operator):
 
                 ui_data.clear()
 
-                rna_idprop_ui_create(obj, prop_name,
+                rna_idprop_ui_create(sourceObj.pose.bones["master"], prop_name,
                                      default=self.default_float if custom_prop.array_length == 0 else eval(
                                          self.default_array) if prop_subtype != "COLOR" else self.default_color,
                                      min=self.min_float if prop_subtype != "COLOR" else 0.,
@@ -141,7 +141,7 @@ class MustardUI_Property_Settings(bpy.types.Operator):
 
                 ui_data.clear()
 
-                rna_idprop_ui_create(obj, prop_name,
+                rna_idprop_ui_create(sourceObj.pose.bones["master"], prop_name,
                                      default=self.default_bool if custom_prop.array_length == 0 else eval(
                                          self.default_array),
                                      description=self.description,
@@ -157,7 +157,7 @@ class MustardUI_Property_Settings(bpy.types.Operator):
 
                 ui_data.clear()
 
-                rna_idprop_ui_create(obj, prop_name,
+                rna_idprop_ui_create(sourceObj.pose.bones["master"], prop_name,
                                      default=self.default_int if custom_prop.array_length == 0 else eval(
                                          self.default_array),
                                      min=self.min_int,
@@ -171,7 +171,7 @@ class MustardUI_Property_Settings(bpy.types.Operator):
                 custom_prop.max_int = self.max_int
                 if custom_prop.array_length == 0:
                     custom_prop.default_int = self.default_int
-                    obj[prop_name] = int(obj[prop_name])
+                    sourceObj.pose.bones["master"][prop_name] = int(sourceObj.pose.bones["master"][prop_name])
                 else:
                     custom_prop.default_array = self.default_array
             else:
