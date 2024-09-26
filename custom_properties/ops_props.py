@@ -32,11 +32,6 @@ class MustardUI_Property_MenuAdd(bpy.types.Operator):
             custom_props = armature.MustardUI_CustomPropertiesHair
         else:
             custom_props = armature.MustardUI_CustomProperties
-
-        # Get the bone from the armature
-        if not hasattr(context, 'selected_bone_name'):
-            self.report({'ERROR'}, 'MustardUI - Bone not found or not selected.')
-            return {'FINISHED'}
             
         bone_name = "master"  # Assuming this is set in context
         bone = armature.pose.bones.get(bone_name)
