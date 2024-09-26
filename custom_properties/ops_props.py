@@ -25,6 +25,13 @@ class MustardUI_Property_MenuAdd(bpy.types.Operator):
     def execute(self, context):
         
         res, armature = mustardui_active_object(context, config=1)
+        sourceObj = None
+        for obj in bpy.data.objects:
+            if obj.data == armature:
+                sourceObj = obj;
+        
+        if not sourceObj:
+            return {'FINISHED'}
         
         if self.outfit != "":
             custom_props = armature.MustardUI_CustomPropertiesOutfit
@@ -34,7 +41,7 @@ class MustardUI_Property_MenuAdd(bpy.types.Operator):
             custom_props = armature.MustardUI_CustomProperties
             
         bone_name = "master"  # Assuming this is set in context
-        bone = armature.data.pose.bones.get(bone_name)
+        bone = sourceObj.pose.bones.get(bone_name)
 
         if not bone:
             self.report({'ERROR'}, f"MustardUI - Bone '{bone_name}' not found.")
