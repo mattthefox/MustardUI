@@ -23,6 +23,11 @@ def _label_multiline(context, text, parent, icon):
 
 
 def draw_section(context, layout, obj, settings, rig_settings, custom_props, section, draw_sub = True):
+    sourceObj = None
+    for searchObj in bpy.data.objects:
+        if searchObj.data == obj:
+            sourceObj = searchObj;
+    
     if rig_settings.body_custom_properties_name_order:
         custom_properties_section = sorted([x for x in custom_props if
                                             x.section == section.name and not x.hidden and (
@@ -63,7 +68,7 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
                         row.prop(settings, 'custom_properties_error_nonanimatable', icon="ERROR", text="",
                                  icon_only=True, emboss=False)
                 else:
-                    if prop.prop_name in obj.keys():
+                    if prop.prop_name in sourceObj.pose.bones["master"].keys():
                         row.prop(obj, '["' + prop.prop_name + '"]', text="")
                     else:
                         row.prop(settings, 'custom_properties_error', icon="ERROR", text="", icon_only=True,
