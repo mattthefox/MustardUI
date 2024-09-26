@@ -34,7 +34,7 @@ class MustardUI_Property_Rebuild(bpy.types.Operator):
             var.name = 'mustardui_var'
             var.targets[0].id_type = "OBJECT"
             var.targets[0].id = obj
-            var.targets[0].data_path = 'pose.bones["'+bone_name+'"]["' + prop_name + '"]'
+            var.targets[0].data_path = 'pose.bones["master"]["' + prop_name + '"]'
             #var.targets[0].data_path = '["' + prop_name + '"]'
 
         # Array property
@@ -47,6 +47,7 @@ class MustardUI_Property_Rebuild(bpy.types.Operator):
                 var.name = 'mustardui_var'
                 var.targets[0].id_type = "ARMATURE"
                 var.targets[0].id = obj
+                var.targets[0].data_path = 'pose.bones["master"]["' + prop_name + '"]['+str(i)+']'
 
         return
 
