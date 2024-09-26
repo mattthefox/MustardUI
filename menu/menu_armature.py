@@ -23,9 +23,11 @@ class PANEL_PT_MustardUI_Armature(MainPanel, bpy.types.Panel):
                 row.prop(prop, prop_name,
                          text=name,
                          toggle=True)
+            row.prop(prop,"is_solo","","SOLO_OFF")
+                
 
         if not armature_settings.mirror:
-            row = layout.row()
+            row = layout.row(align=True)
             draw_with_icon(bcoll, "is_visible", bcoll.name, bcoll_settings.icon)
             return
 
