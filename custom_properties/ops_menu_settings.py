@@ -100,12 +100,16 @@ class MustardUI_Property_Settings(bpy.types.Operator):
         custom_prop.icon = self.icon
 
         if custom_prop.is_animatable:
+            sourceObj = None;
+            for searchObj in bpy.data.objects:
+                if searchObj.data == obj:
+                    sourceObj = searchObj;
 
             prop_name = custom_prop.prop_name
             prop_array = custom_prop.array_length > 0
             prop_subtype = custom_prop.subtype
 
-            ui_data = obj.id_properties_ui(prop_name)
+            ui_data = sourceObj.pose.bones["master"].id_properties_ui(prop_name)
             ui_data_dict = ui_data.as_dict()
 
             if prop_type == "FLOAT":
