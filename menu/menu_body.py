@@ -77,6 +77,7 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
                     try:
                         row.prop(eval(prop.rna), prop.path, text="")
                     except:
+                        # Finally complete.
                         row.prop(settings, 'custom_properties_error_nonanimatable', icon="ERROR", text="",
                                  icon_only=True, emboss=False)
                 else:
