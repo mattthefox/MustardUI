@@ -133,7 +133,7 @@ class MustardUI_Property_Settings(bpy.types.Operator):
                 custom_prop.max_float = self.max_float
                 if custom_prop.array_length == 0:
                     custom_prop.default_float = self.default_float
-                    obj[prop_name] = float(obj[prop_name])
+                    sourceObj.pose.bones["master"][prop_name] = float(sourceObj.pose.bones["master"][prop_name])
                 else:
                     custom_prop.default_array = self.default_array if prop_subtype != "COLOR" else str(
                         ui_data.as_dict()['default'])
