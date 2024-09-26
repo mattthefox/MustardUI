@@ -213,7 +213,7 @@ class MustardUI_Property_MenuAdd(bpy.types.Operator):
             return {'FINISHED'}
 
         # Update the drivers
-        bone.update_tag()
+        armature.update_tag()
 
         self.report({'INFO'}, 'MustardUI - Property added to bone.')
 
