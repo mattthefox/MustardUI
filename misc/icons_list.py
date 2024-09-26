@@ -31,8 +31,8 @@ mustardui_icon_list = [
     ("MOD_OUTLINE", "Penis", "Penis", "MOD_OUTLINE", 25),
     ("PIVOT_CURSOR", "Anus", "Anus", "PIVOT_CURSOR", 26),
     ("MOUSE_MMB", "Vagina", "Vagina", "MOUSE_MMB", 27),
-    ("META_BALL", "Butt", "Butt", "META_BALL", 28)
-    
-    
-    
+    ("META_BALL", "Butt", "Butt", "META_BALL", 28),
+    ("MOD_FLUIDSIM", "Liquid", "Liquid", "MOD_FLUIDSIM", 29),
+    ("IPO_BACK", "Cum", "Cum", "IPO_BACK", 30),
+	("PROP_OFF", "Nipple", "Nipple", "PROP_OFF", 31)
 ]
