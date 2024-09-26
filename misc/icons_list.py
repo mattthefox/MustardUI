@@ -26,5 +26,13 @@ mustardui_icon_list = [
     ("GHOST_ENABLED", "Ghost", "Ghost", "GHOST_ENABLED", 20),
     ("CAMERA_STEREO", "Glasses", "Glasses", "CAMERA_STEREO", 21),
     ("SOLO_ON", "Star", "Star", "SOLO_ON", 22),
-    ("ERROR", "Error", "Error", "ERROR", 23)
+    ("ERROR", "Error", "Error", "ERROR", 23),
+    ("PIVOT_INDIVIDUAL", "Boobs", "Boobs", "PIVOT_INDIVIDUAL", 24),
+    ("MOD_OUTLINE", "Penis", "Penis", "MOD_OUTLINE", 25),
+    ("PIVOT_CURSOR", "Anus", "Anus", "PIVOT_CURSOR", 26),
+    ("MOUSE_MMB", "Vagina", "Vagina", "MOUSE_MMB", 27),
+    ("META_BALL", "Butt", "Butt", "META_BALL", 28)
+    
+    
+    
 ]
