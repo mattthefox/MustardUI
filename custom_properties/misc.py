@@ -54,6 +54,7 @@ def mustardui_add_driver(obj, rna, path, prop, prop_name):
     armature = obj  # Assuming obj is the armature
 
     # Check if the bone exists
+    """
     if bone_name not in armature.data.bones:
         # Create the bone if it doesn't exist
         obj.select_set(True)
@@ -65,6 +66,7 @@ def mustardui_add_driver(obj, rna, path, prop, prop_name):
         bpy.ops.object.mode_set(mode='OBJECT')  # Switch back to object mode
         bpy.context.view_layer.objects.active = driver_object;
         driver_object.select_set(True)
+    """
 
     # No array property
     if prop.array_length == 0:
@@ -74,8 +76,8 @@ def mustardui_add_driver(obj, rna, path, prop, prop_name):
         var.name = 'mustardui_var'
         var.targets[0].id_type = "OBJECT"
         var.targets[0].id = obj
-        var.targets[0].data_path = '.pose_bones["'+bone_name+'"]["' + prop_name + '"]'
-        #var.targets[0].data_path = '["' + prop_name + '"]'
+        #var.targets[0].data_path = '.pose_bones["'+bone_name+'"]["' + prop_name + '"]'
+        var.targets[0].data_path = '["' + prop_name + '"]'
 
     # Array property
     else:
