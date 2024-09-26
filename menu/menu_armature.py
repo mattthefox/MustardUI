@@ -23,7 +23,7 @@ class PANEL_PT_MustardUI_Armature(MainPanel, bpy.types.Panel):
                 row.prop(prop, prop_name,
                          text=name,
                          toggle=True)
-            row.prop(prop,"is_solo","","SOLO_OFF")
+            row.prop(prop,"is_solo",text="",icon="SOLO_OFF",toggle=True)
                 
 
         if not armature_settings.mirror:
