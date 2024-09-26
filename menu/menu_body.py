@@ -27,6 +27,11 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
     for searchObj in bpy.data.objects:
         if searchObj.data == obj:
             sourceObj = searchObj;
+    print(obj)
+    print(obj)
+    print(obj)
+    print(obj)
+
     print(sourceObj)
     print(sourceObj)
     print(sourceObj)
