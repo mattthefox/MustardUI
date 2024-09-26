@@ -69,7 +69,7 @@ def mustardui_add_driver(obj, rna, path, prop, prop_name):
     """
 
     # No array property
-    if prop.array_length == 0:        sourceObj
+    if prop.array_length == 0:
         driver = driver.driver
         driver.type = "AVERAGE"
         var = driver.variables.new()
