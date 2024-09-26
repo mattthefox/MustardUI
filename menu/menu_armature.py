@@ -14,20 +14,21 @@ class PANEL_PT_MustardUI_Armature(MainPanel, bpy.types.Panel):
     def draw_armature_button(self, bcoll, bcoll_settings, bcolls, armature_settings, layout):
 
         def draw_with_icon(prop, prop_name, name, icon):
+            subrow = row.row(align=True)
             if icon != "NONE":
-                row.prop(prop, prop_name,
+                subrow.prop(prop, prop_name,
                          text=name,
                          toggle=True,
                          icon=icon)
             else:
-                row.prop(prop, prop_name,
+                subrow.prop(prop, prop_name,
                          text=name,
                          toggle=True)
-            row.prop(prop,"is_solo",text="",icon="SOLO_OFF",toggle=True)
+            subrow.prop(prop,"is_solo",text="",icon="SOLO_OFF",toggle=True)
                 
 
         if not armature_settings.mirror:
-            row = layout.row(align=True)
+            row = layout.row()
             draw_with_icon(bcoll, "is_visible", bcoll.name, bcoll_settings.icon)
             return
 
@@ -37,7 +38,7 @@ class PANEL_PT_MustardUI_Armature(MainPanel, bpy.types.Panel):
             ) or (
                     bcoll.name.lower().startswith("left") and b.name.lower() == "right" + bcoll.name[4:].lower()
             ):
-                row = layout.row(align=True)
+                row = layout.row()
                 draw_with_icon(bcoll, "is_visible", bcoll.name, bcoll_settings.icon)
                 r_icon = b.MustardUI_ArmatureBoneCollection.icon
                 draw_with_icon(b, "is_visible", b.name, r_icon)
@@ -49,7 +50,7 @@ class PANEL_PT_MustardUI_Armature(MainPanel, bpy.types.Panel):
             ):
                 return
 
-        row = layout.row(align=True)
+        row = layout.row()
         draw_with_icon(bcoll, "is_visible", bcoll.name, bcoll_settings.icon)
 
     @classmethod
