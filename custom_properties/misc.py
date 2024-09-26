@@ -50,7 +50,7 @@ def mustardui_add_driver(obj, rna, path, prop, prop_name):
     driver_object.driver_remove(path)
     driver = driver_object.driver_add(path)
 
-    bone_name = "mui_props"
+    bone_name = "master"
     armature = obj  # Assuming obj is the armature
 
     # Check if the bone exists
@@ -74,10 +74,10 @@ def mustardui_add_driver(obj, rna, path, prop, prop_name):
         driver.type = "AVERAGE"
         var = driver.variables.new()
         var.name = 'mustardui_var'
-        var.targets[0].id_type = "ARMATURE"
+        var.targets[0].id_type = "OBJECT"
         var.targets[0].id = obj
-        #var.targets[0].data_path = '.pose_bones["'+bone_name+'"]["' + prop_name + '"]'
-        var.targets[0].data_path = '["' + prop_name + '"]'
+        var.targets[0].data_path = 'pose.bones["'+bone_name+'"]["' + prop_name + '"]'
+        #var.targets[0].data_path = '["' + prop_name + '"]'
 
     # Array property
     else:

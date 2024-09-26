@@ -22,187 +22,201 @@ class MustardUI_Property_MenuAdd(bpy.types.Operator):
         res, arm = mustardui_active_object(context, config=1)
         return res
 
-    def execute(self, context):
+def execute(self, context):
+    
+    res, armature = mustardui_active_object(context, config=1)
+    
+    if self.outfit != "":
+        custom_props = armature.MustardUI_CustomPropertiesOutfit
+    elif self.hair != "":
+        custom_props = armature.MustardUI_CustomPropertiesHair
+    else:
+        custom_props = armature.MustardUI_CustomProperties
 
-        res, obj = mustardui_active_object(context, config=1)
-        if self.outfit != "":
-            custom_props = obj.MustardUI_CustomPropertiesOutfit
-        elif self.hair != "":
-            custom_props = obj.MustardUI_CustomPropertiesHair
-        else:
-            custom_props = obj.MustardUI_CustomProperties
+    # Get the bone from the armature
+    if not hasattr(context, 'selected_bone_name'):
+        self.report({'ERROR'}, 'MustardUI - Bone not found or not selected.')
+        return {'FINISHED'}
+        
+    bone_name = "master"  # Assuming this is set in context
+    bone = armature.pose.bones.get(bone_name)
 
-        if not hasattr(context, 'button_prop'):
-            self.report({'ERROR'}, 'MustardUI - Can not create custom property from this property.')
-            return {'FINISHED'}
+    if not bone:
+        self.report({'ERROR'}, f"MustardUI - Bone '{bone_name}' not found.")
+        return {'FINISHED'}
+    
+    if not hasattr(context, 'button_prop'):
+        self.report({'ERROR'}, 'MustardUI - Can not create custom property from this property.')
+        return {'FINISHED'}
 
-        prop = context.button_prop
+    prop = context.button_prop
 
-        # dump(prop, 'button_prop')
+    # dump(prop, 'button_prop')
 
-        # Copy the path of the selected property
+    # Copy the path of the selected property
+    try:
+        bpy.ops.ui.copy_data_path_button(full_path=True)
+    except:
+        self.report({'ERROR'}, 'MustardUI - Invalid selection.')
+        return {'FINISHED'}
+
+    # Adjust the property path to be exported
+    clipboard = context.window_manager.clipboard
+    blender_custom_property = '][' in clipboard
+    if not blender_custom_property:
+        rna, path = clipboard.rsplit('.', 1)
+    else:
+        path = clipboard
+        rna = ""
+
+    if blender_custom_property:
+        path, rem = path.rsplit('[', 1)
+        rna = path
+        path = '[' + rem
+    elif '[' in path:
+        path, rem = path.rsplit('[', 1)
+
+    # Check if the property was already added
+    if not mustardui_check_cp(bone, rna, path):
+        self.report({'ERROR'}, 'MustardUI - This property was already added.')
+        return {'FINISHED'}
+
+    # Try to find a better name than default_value for material nodes
+    if "node_tree.nodes" in rna:
+        rna_node = rna.rsplit(".", 1)
+
+        # Check for .type existence
         try:
-            bpy.ops.ui.copy_data_path_button(full_path=True)
+            if eval(rna_node[0] + ".type") in ["VALUE", "RGB"]:
+                prop_name_ui = eval(rna_node[0] + ".name")
+            else:
+                prop_name_ui = eval(rna + ".name")
         except:
-            self.report({'ERROR'}, 'MustardUI - Invalid selection.')
-            return {'FINISHED'}
-
-        # Adjust the property path to be exported
-        clipboard = context.window_manager.clipboard
-        blender_custom_property = '][' in clipboard
-        if not blender_custom_property:
-            rna, path = clipboard.rsplit('.', 1)
-        else:
-            path = clipboard
-            rna = ""
-
-        if blender_custom_property:
-            path, rem = path.rsplit('[', 1)
-            rna = path
-            path = '[' + rem
-        elif '[' in path:
-            path, rem = path.rsplit('[', 1)
-
-        # Check if the property was already added
-        if not mustardui_check_cp(obj, rna, path):
-            self.report({'ERROR'}, 'MustardUI - This property was already added.')
-            return {'FINISHED'}
-
-        # Try to find a better name than default_value for material nodes
-        if "node_tree.nodes" in rna:
-            rna_node = rna.rsplit(".", 1)
-
-            # Check for .type existance
-            try:
-                if eval(rna_node[0] + ".type") in ["VALUE", "RGB"]:
-                    prop_name_ui = eval(rna_node[0] + ".name")
-                else:
-                    prop_name_ui = eval(rna + ".name")
-            except:
-                prop_name_ui = prop.name
-
-        # Try to find a better name than default_value for shape keys
-        elif "shape_keys" in rna and "key_block" in rna:
-            prop_name_ui = eval(rna + ".name")
-        else:
             prop_name_ui = prop.name
 
-        # Add custom property to the object
-        prop_name = prop_name_ui
-        if prop.is_animatable or blender_custom_property:
+    # Try to find a better name than default_value for shape keys
+    elif "shape_keys" in rna and "key_block" in rna:
+        prop_name_ui = eval(rna + ".name")
+    else:
+        prop_name_ui = prop.name
 
-            add_string_num = 1
-            while prop_name in obj.keys():
-                add_string_num += 1
-                prop_name = prop_name_ui + ' ' + str(add_string_num)
+    # Add custom property to the bone (instead of the armature)
+    prop_name = prop_name_ui
+    if prop.is_animatable or blender_custom_property:
 
-            if prop.type == "ENUM":
-                pass
+        add_string_num = 1
+        while prop_name in bone.keys():
+            add_string_num += 1
+            prop_name = prop_name_ui + ' ' + str(add_string_num)
 
-            # Change custom properties settings
-            elif prop.type == "BOOLEAN" and prop.array_length < 1:
-                rna_idprop_ui_create(obj, prop_name, default=eval(mustardui_cp_path(rna, path)),
-                                     description=prop.description,
-                                     overridable=True)
+        if prop.type == "ENUM":
+            pass
 
-            elif (hasattr(prop, 'hard_min') and hasattr(prop, 'hard_max') and hasattr(prop, 'default')
-                  and hasattr(prop, 'description') and hasattr(prop, 'subtype')):
-                description = prop.description if (not "node_tree.nodes" in rna and not "shape_keys" in rna) else ""
-                rna_idprop_ui_create(obj, prop_name, default=eval(mustardui_cp_path(rna, path)),
-                                     min=prop.hard_min if prop.subtype != "COLOR" else 0.,
-                                     max=prop.hard_max if prop.subtype != "COLOR" else 1.,
-                                     description=description,
-                                     overridable=True,
-                                     subtype=prop.subtype if prop.subtype != "FACTOR" else None)
-            elif hasattr(prop, 'description'):
-                rna_idprop_ui_create(obj, prop_name, default=eval(mustardui_cp_path(rna, path)),
-                                     description=prop.description)
+        # Change custom properties settings
+        elif prop.type == "BOOLEAN" and prop.array_length < 1:
+            rna_idprop_ui_create(bone, prop_name, default=eval(mustardui_cp_path(rna, path)),
+                                 description=prop.description,
+                                 overridable=True)
 
-        # Add driver
-        force_non_animatable = False
-        try:
-            if (prop.is_animatable or blender_custom_property) and not prop.type == "ENUM":
-                mustardui_add_driver(obj, rna, path, prop, prop_name)
-            else:
-                force_non_animatable = True
-        except:
-            force_non_animatable = True
+        elif (hasattr(prop, 'hard_min') and hasattr(prop, 'hard_max') and hasattr(prop, 'default')
+              and hasattr(prop, 'description') and hasattr(prop, 'subtype')):
+            description = prop.description if (not "node_tree.nodes" in rna and not "shape_keys" in rna) else ""
+            rna_idprop_ui_create(bone, prop_name, default=eval(mustardui_cp_path(rna, path)),
+                                 min=prop.hard_min if prop.subtype != "COLOR" else 0.,
+                                 max=prop.hard_max if prop.subtype != "COLOR" else 1.,
+                                 description=description,
+                                 overridable=True,
+                                 subtype=prop.subtype if prop.subtype != "FACTOR" else None)
+        elif hasattr(prop, 'description'):
+            rna_idprop_ui_create(bone, prop_name, default=eval(mustardui_cp_path(rna, path)),
+                                 description=prop.description)
 
-        # Add property to the collection of properties
-        if not (rna, path) in [(x.rna, x.path) for x in custom_props]:
-
-            cp = custom_props.add()
-            cp.rna = rna
-            cp.path = path
-            cp.name = prop_name_ui
-            cp.prop_name = prop_name
-            cp.type = prop.type
-            if hasattr(prop, 'array_length'):
-                cp.array_length = prop.array_length
-            cp.subtype = prop.subtype
-
-            # Try to find icon
-            if "materials" in rna:
-                cp.icon = "MATERIAL"
-            elif "key_blocks" in rna:
-                cp.icon = "SHAPEKEY_DATA"
-
-            cp.is_animatable = (prop.is_animatable if not force_non_animatable else False) or blender_custom_property
-
-            cp.section = self.section
-
-            # Assign type
-            if self.outfit != "":
-                cp.cp_type = "OUTFIT"
-            elif self.hair != "":
-                cp.cp_type = "HAIR"
-            else:
-                cp.cp_type = "BODY"
-
-            # Outfit and hair properties
-            if self.outfit != "":
-                cp.outfit = bpy.data.collections[self.outfit]
-                if self.outfit_piece != "":
-                    cp.outfit_piece = bpy.data.objects[self.outfit_piece]
-            elif self.hair != "":
-                cp.hair = bpy.data.objects[self.hair]
-
-            if cp.is_animatable:
-
-                ui_data_dict = obj.id_properties_ui(prop_name).as_dict()
-
-                if hasattr(prop, 'description'):
-                    cp.description = ui_data_dict['description']
-                if hasattr(prop, 'default'):
-                    if prop.array_length == 0:
-                        if prop.type == "FLOAT":
-                            cp.default_float = prop.default
-                        elif prop.type == "INT" or prop.type == "BOOLEAN":
-                            cp.default_int = prop.default
-                    else:
-                        cp.default_array = str(ui_data_dict['default'])
-
-                if hasattr(prop, 'hard_min') and prop.type != "BOOLEAN":
-                    if prop.type == "FLOAT":
-                        cp.min_float = prop.hard_min
-                    elif prop.type == "INT":
-                        cp.min_int = prop.hard_min
-                if hasattr(prop, 'hard_max') and prop.type != "BOOLEAN":
-                    if prop.type == "FLOAT":
-                        cp.max_float = prop.hard_max
-                    elif prop.type == "INT":
-                        cp.max_int = prop.hard_max
+    # Add driver
+    force_non_animatable = False
+    try:
+        if (prop.is_animatable or blender_custom_property) and not prop.type == "ENUM":
+            mustardui_add_driver(bone, rna, path, prop, prop_name)
         else:
-            self.report({'ERROR'},
-                        'MustardUI - An error occurred while adding the property to the custom properties list.')
-            return {'FINISHED'}
+            force_non_animatable = True
+    except:
+        force_non_animatable = True
 
-        # Update the drivers
-        obj.update_tag()
+    # Add property to the collection of properties in the bone's custom properties
+    if not (rna, path) in [(x.rna, x.path) for x in custom_props]:
 
-        self.report({'INFO'}, 'MustardUI - Property added.')
+        cp = custom_props.add()
+        cp.rna = rna
+        cp.path = path
+        cp.name = prop_name_ui
+        cp.prop_name = prop_name
+        cp.type = prop.type
+        if hasattr(prop, 'array_length'):
+            cp.array_length = prop.array_length
+        cp.subtype = prop.subtype
 
+        # Try to find icon
+        if "materials" in rna:
+            cp.icon = "MATERIAL"
+        elif "key_blocks" in rna:
+            cp.icon = "SHAPEKEY_DATA"
+
+        cp.is_animatable = (prop.is_animatable if not force_non_animatable else False) or blender_custom_property
+
+        cp.section = self.section
+
+        # Assign type
+        if self.outfit != "":
+            cp.cp_type = "OUTFIT"
+        elif self.hair != "":
+            cp.cp_type = "HAIR"
+        else:
+            cp.cp_type = "BODY"
+
+        # Outfit and hair properties
+        if self.outfit != "":
+            cp.outfit = bpy.data.collections[self.outfit]
+            if self.outfit_piece != "":
+                cp.outfit_piece = bpy.data.objects[self.outfit_piece]
+        elif self.hair != "":
+            cp.hair = bpy.data.objects[self.hair]
+
+        if cp.is_animatable:
+
+            ui_data_dict = bone.id_properties_ui(prop_name).as_dict()
+
+            if hasattr(prop, 'description'):
+                cp.description = ui_data_dict['description']
+            if hasattr(prop, 'default'):
+                if prop.array_length == 0:
+                    if prop.type == "FLOAT":
+                        cp.default_float = prop.default
+                    elif prop.type == "INT" or prop.type == "BOOLEAN":
+                        cp.default_int = prop.default
+                else:
+                    cp.default_array = str(ui_data_dict['default'])
+
+            if hasattr(prop, 'hard_min') and prop.type != "BOOLEAN":
+                if prop.type == "FLOAT":
+                    cp.min_float = prop.hard_min
+                elif prop.type == "INT":
+                    cp.min_int = prop.hard_min
+            if hasattr(prop, 'hard_max') and prop.type != "BOOLEAN":
+                if prop.type == "FLOAT":
+                    cp.max_float = prop.hard_max
+                elif prop.type == "INT":
+                    cp.max_int = prop.hard_max
+    else:
+        self.report({'ERROR'},
+                    'MustardUI - An error occurred while adding the property to the custom properties list.')
         return {'FINISHED'}
+
+    # Update the drivers
+    bone.update_tag()
+
+    self.report({'INFO'}, 'MustardUI - Property added to bone.')
+
+    return {'FINISHED'}
+
 
 
 class MustardUI_Property_Remove(bpy.types.Operator):
