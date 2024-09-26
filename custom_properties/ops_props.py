@@ -79,7 +79,7 @@ class MustardUI_Property_MenuAdd(bpy.types.Operator):
             path, rem = path.rsplit('[', 1)
 
         # Check if the property was already added
-        if not mustardui_check_cp(bone, rna, path):
+        if not mustardui_check_cp(armature, rna, path):
             self.report({'ERROR'}, 'MustardUI - This property was already added.')
             return {'FINISHED'}
 
