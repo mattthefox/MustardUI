@@ -27,6 +27,7 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
     for searchObj in bpy.data.objects:
         if searchObj.data == obj:
             sourceObj = searchObj;
+    print(sourceObj)
     
     if rig_settings.body_custom_properties_name_order:
         custom_properties_section = sorted([x for x in custom_props if
