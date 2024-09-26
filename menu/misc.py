@@ -16,6 +16,7 @@ def mustardui_custom_properties_print(arm, settings, rig_settings, custom_proper
                 row2.prop(settings, 'custom_properties_error_nonanimatable', icon="ERROR", text="", icon_only=True,
                           emboss=False)
         else:
+            # @TODO change this logic
             if prop.prop_name in arm.keys():
                 row2.prop(arm, '["' + prop.prop_name + '"]', text="")
             else:

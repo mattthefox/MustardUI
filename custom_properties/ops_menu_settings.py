@@ -184,6 +184,11 @@ class MustardUI_Property_Settings(bpy.types.Operator):
         custom_props, index = mustardui_choose_cp(obj, self.type, context.scene)
         addon_prefs = context.preferences.addons["MustardUI"].preferences
 
+        sourceObj = None;
+        for searchObj in bpy.data.objects:
+            if searchObj.data == obj:
+                sourceObj = searchObj;
+
         if len(custom_props) <= index:
             return {'FINISHED'}
 
@@ -203,7 +208,7 @@ class MustardUI_Property_Settings(bpy.types.Operator):
             self.force_type = custom_prop.force_type
 
             try:
-                ui_data = obj.id_properties_ui(custom_prop.prop_name)
+                ui_data = sourceObj.pose.bones["master"].id_properties_ui(custom_prop.prop_name)
                 ui_data_dict = ui_data.as_dict()
             except:
                 self.report({'ERROR'},

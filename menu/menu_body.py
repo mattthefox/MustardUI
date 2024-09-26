@@ -27,19 +27,7 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
     for searchObj in bpy.data.objects:
         if searchObj.data == obj:
             sourceObj = searchObj;
-    print(obj)
-    print(obj)
-    print(obj)
-    print(obj)
 
-    print(sourceObj)
-    print(sourceObj)
-    print(sourceObj)
-    print(sourceObj)
-    print(sourceObj)
-    print(sourceObj)
-                
-    
     if rig_settings.body_custom_properties_name_order:
         custom_properties_section = sorted([x for x in custom_props if
                                             x.section == section.name and not x.hidden and (
@@ -82,10 +70,6 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
                                  icon_only=True, emboss=False)
                 else:
                     if prop.prop_name in sourceObj.pose.bones["master"].keys():
-                        print(prop.prop_name)
-                        print(prop.prop_name)
-                        print(prop.prop_name)
-                        print(prop.prop_name)
                         row.prop(sourceObj.pose.bones["master"], f'["{prop.prop_name}"]', text="")
                     else:
                         row.prop(settings, 'custom_properties_error', icon="ERROR", text="", icon_only=True,
