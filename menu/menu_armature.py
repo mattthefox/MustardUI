@@ -37,7 +37,7 @@ class PANEL_PT_MustardUI_Armature(MainPanel, bpy.types.Panel):
             ) or (
                     bcoll.name.lower().startswith("left") and b.name.lower() == "right" + bcoll.name[4:].lower()
             ):
-                row = layout.row()
+                row = layout.row(align=True)
                 draw_with_icon(bcoll, "is_visible", bcoll.name, bcoll_settings.icon)
                 r_icon = b.MustardUI_ArmatureBoneCollection.icon
                 draw_with_icon(b, "is_visible", b.name, r_icon)
@@ -49,7 +49,7 @@ class PANEL_PT_MustardUI_Armature(MainPanel, bpy.types.Panel):
             ):
                 return
 
-        row = layout.row()
+        row = layout.row(align=True)
         draw_with_icon(bcoll, "is_visible", bcoll.name, bcoll_settings.icon)
 
     @classmethod
