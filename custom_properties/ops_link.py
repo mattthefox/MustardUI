@@ -38,9 +38,10 @@ class MustardUI_Property_MenuLink(bpy.types.Operator):
             self.report({'ERROR'}, 'MustardUI - Can not link this property to anything.')
             return {'FINISHED'}
 
-        if not prop.is_animatable:
-            self.report({'ERROR'}, 'MustardUI - Can not link a \'non animatable\' property.')
-            return {'FINISHED'}
+        if not "oxv_" in prop.name:
+            if not prop.is_animatable:
+                self.report({'ERROR'}, 'MustardUI - Can not link a \'non animatable\' property.')
+                return {'FINISHED'}
 
         found = False
         for parent_prop in custom_props:
