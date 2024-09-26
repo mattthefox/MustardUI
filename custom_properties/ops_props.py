@@ -34,7 +34,7 @@ class MustardUI_Property_MenuAdd(bpy.types.Operator):
             custom_props = armature.MustardUI_CustomProperties
             
         bone_name = "master"  # Assuming this is set in context
-        bone = armature.pose.bones.get(bone_name)
+        bone = armature.data.pose.bones.get(bone_name)
 
         if not bone:
             self.report({'ERROR'}, f"MustardUI - Bone '{bone_name}' not found.")
