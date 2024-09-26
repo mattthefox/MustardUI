@@ -51,22 +51,6 @@ def mustardui_add_driver(obj, rna, path, prop, prop_name):
     driver = driver_object.driver_add(path)
 
     bone_name = "master"
-    armature = obj  # Assuming obj is the armature
-
-    # Check if the bone exists
-    """
-    if bone_name not in armature.data.bones:
-        # Create the bone if it doesn't exist
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = obj;
-        bpy.ops.object.mode_set(mode='EDIT')  # Switch to edit mode
-        new_bone = armature.data.edit_bones.new(bone_name)  # Create a new bone
-        new_bone.head = (0, 0, 0)  # Set the head position (customize as needed)
-        new_bone.tail = (0, 0, 1)  # Set the tail position (customize as needed)
-        bpy.ops.object.mode_set(mode='OBJECT')  # Switch back to object mode
-        bpy.context.view_layer.objects.active = driver_object;
-        driver_object.select_set(True)
-    """
 
     # No array property
     if prop.array_length == 0:
@@ -89,15 +73,19 @@ def mustardui_add_driver(obj, rna, path, prop, prop_name):
             var.name = 'mustardui_var'
             var.targets[0].id_type = "ARMATURE"
             var.targets[0].id = obj
-            var.targets[0].data_path = '["' + prop_name + '"]' + '[' + str(i) + ']'
+            var.targets[0].data_path = 'pose.bones["'+bone_name+'"]["' + prop_name + '"]['+str(i)+']'
 
     return
 
 
 def mustardui_clean_prop(obj, uilist, index, addon_prefs):
+    sourceObj = None
+    for searchObj in bpy.data.objects:
+        if searchObj.data == obj:
+            sourceObj = searchObj;
     # Delete custom property and drivers
     try:
-        ui_data = obj.id_properties_ui(uilist[index].prop_name)
+        ui_data = sourceObj.pose.bones["master"].id_properties_ui(uilist[index].prop_name)
         ui_data.clear()
     except:
         if addon_prefs.debug:
@@ -105,7 +93,7 @@ def mustardui_clean_prop(obj, uilist, index, addon_prefs):
 
     # Delete custom property
     try:
-        del obj[uilist[index].prop_name]
+        del sourceObj.pose.bones["master"][uilist[index].prop_name]
     except:
         if addon_prefs.debug:
             print('MustardUI - Properties not found. Skipping custom properties deletion')

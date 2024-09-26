@@ -12,6 +12,10 @@ class MustardUI_Property_Rebuild(bpy.types.Operator):
     bl_options = {'UNDO'}
 
     def add_driver(self, obj, rna, path, prop_name):
+        sourceObj = None
+        for searchObj in bpy.data.objects:
+            if searchObj.data == obj:
+                sourceObj = searchObj;
 
         driver_object = eval(rna)
         driver_object.driver_remove(path)
@@ -28,9 +32,10 @@ class MustardUI_Property_Rebuild(bpy.types.Operator):
             driver.type = "AVERAGE"
             var = driver.variables.new()
             var.name = 'mustardui_var'
-            var.targets[0].id_type = "ARMATURE"
+            var.targets[0].id_type = "OBJECT"
             var.targets[0].id = obj
-            var.targets[0].data_path = '["' + prop_name + '"]'
+            var.targets[0].data_path = 'pose.bones["'+bone_name+'"]["' + prop_name + '"]'
+            #var.targets[0].data_path = '["' + prop_name + '"]'
 
         # Array property
         else:
@@ -42,7 +47,6 @@ class MustardUI_Property_Rebuild(bpy.types.Operator):
                 var.name = 'mustardui_var'
                 var.targets[0].id_type = "ARMATURE"
                 var.targets[0].id = obj
-                var.targets[0].data_path = '["' + prop_name + '"]' + '[' + str(i) + ']'
 
         return
 
