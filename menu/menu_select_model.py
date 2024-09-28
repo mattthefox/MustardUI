@@ -24,9 +24,21 @@ class PANEL_PT_MustardUI_SelectModel(MainPanel, bpy.types.Panel):
 
         layout = self.layout
 
+        for obj in bpy.data.objects:
+            if obj.type == 'ARMATURE':
+                if obj.data.MustardUI_created:
+                    row = layout.row(align=True)
+                    row.prop(obj, "hide_viewport",text="")
+                    row.operator('mustardui.switchmodel', text=obj.data.MustardUI_RigSettings.model_name,
+                                    depress=obj.data == settings.panel_model_selection_armature).model_to_switch = obj.data.name
+
+    """
         for armature in [x for x in bpy.data.armatures if x.MustardUI_created]:
-            layout.operator('mustardui.switchmodel', text=armature.MustardUI_RigSettings.model_name,
+            row = layout.row(align=True)
+            row.prop()
+            row.operator('mustardui.switchmodel', text=armature.MustardUI_RigSettings.model_name,
                             depress=armature == settings.panel_model_selection_armature).model_to_switch = armature.name
+    """
 
 
 def register():
