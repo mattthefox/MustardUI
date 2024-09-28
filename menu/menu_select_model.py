@@ -28,7 +28,7 @@ class PANEL_PT_MustardUI_SelectModel(MainPanel, bpy.types.Panel):
             if obj.type == 'ARMATURE':
                 if obj.data.MustardUI_created:
                     row = layout.row(align=True)
-                    row.prop(obj, "hide_viewport",text="")
+                    row.prop(obj, "hide_viewport",text="",emboss=True)
                     row.operator('mustardui.switchmodel', text=obj.data.MustardUI_RigSettings.model_name,
                                     depress=obj.data == settings.panel_model_selection_armature).model_to_switch = obj.data.name
 
