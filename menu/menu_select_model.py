@@ -23,12 +23,15 @@ class PANEL_PT_MustardUI_SelectModel(MainPanel, bpy.types.Panel):
         settings = bpy.context.scene.MustardUI_Settings
 
         layout = self.layout
-
+ 
         for obj in bpy.data.objects:
             if obj.type == 'ARMATURE':
                 if obj.data.MustardUI_created:
+                    rig_settings = obj.data.MustardUI_RigSettings
                     row = layout.row(align=True)
-                    row.prop(obj, "hide_viewport",text="",emboss=True)
+                    if rig_settings.model_collection:
+                        row.prop(rig_settings.model_collection, "hide_viewport",text="",icon="OUTLINER_COLLECTION",invert_checkbox=True)
+                    row.prop(obj, "hide_viewport",text="",icon="OUTLINER_OB_ARMATURE", invert_checkbox=True)
                     row.operator('mustardui.switchmodel', text=obj.data.MustardUI_RigSettings.model_name,
                                     depress=obj.data == settings.panel_model_selection_armature).model_to_switch = obj.data.name
 

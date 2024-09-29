@@ -44,6 +44,7 @@ class PANEL_PT_MustardUI_InitPanel(MainPanel, bpy.types.Panel):
         box = layout.box()
         box.prop(rig_settings, "model_name", text="Name")
         box.prop(rig_settings, "model_body", text="Body")
+        box.prop(rig_settings, "model_collection", text="Coll.")
 
         layout.separator()
         layout.label(text="Settings", icon="MENU_PANEL")

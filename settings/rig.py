@@ -25,6 +25,10 @@ class MustardUI_RigSettings(bpy.types.PropertyGroup):
                                           description="Select the mesh that will be considered the body",
                                           type=bpy.types.Object,
                                           poll=poll_mesh)
+    
+    model_collection: bpy.props.PointerProperty(name="Model Collection",
+                                          description="Select the collection associated with the character",
+                                          type=bpy.types.Collection)
 
     # Armature object
     # Poll function for the selection of armatures for the armature object
