@@ -43,7 +43,6 @@ class PANEL_PT_MustardUI_SelectModel(MainPanel, bpy.types.Panel):
                             depress=armature == settings.panel_model_selection_armature).model_to_switch = armature.name
     """
 
-
 def register():
     bpy.utils.register_class(PANEL_PT_MustardUI_SelectModel)
 
