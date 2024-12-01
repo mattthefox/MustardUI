@@ -29,9 +29,13 @@ class PANEL_PT_MustardUI_SelectModel(MainPanel, bpy.types.Panel):
                 if obj.data.MustardUI_created:
                     rig_settings = obj.data.MustardUI_RigSettings
                     row = layout.row(align=True)
+                    # idk why blender works like this with icons... but we must use the icon index after it to get a consistent icon...
+                    icon_offset_viewport = "OUTLINER_COLLECTION" if rig_settings.model_collection.hide_viewport else    "RESTRICT_COLOR_OFF"
+                    icon_offset_armature = "OUTLINER_OB_ARMATURE"if obj.hide_viewport else                              "OUTLINER_OB_FONT"
+
                     if rig_settings.model_collection:
-                        row.prop(rig_settings.model_collection, "hide_viewport",text="",icon="OUTLINER_COLLECTION",invert_checkbox=True)
-                    row.prop(obj, "hide_viewport",text="",icon="OUTLINER_OB_ARMATURE", invert_checkbox=True)
+                        row.prop(rig_settings.model_collection, "hide_viewport",text="",icon=icon_offset_viewport,invert_checkbox=True)
+                    row.prop(obj, "hide_viewport",text="",icon=icon_offset_armature, invert_checkbox=True)
                     row.operator('mustardui.switchmodel', text=obj.data.MustardUI_RigSettings.model_name,
                                     depress=obj.data == settings.panel_model_selection_armature).model_to_switch = obj.data.name
 

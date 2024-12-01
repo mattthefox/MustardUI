@@ -22,11 +22,11 @@ def _label_multiline(context, text, parent, icon):
                 parent.label(text=text_line, icon="BLANK1")
 
 
-def draw_section(context, layout, obj, settings, rig_settings, custom_props, section, draw_sub = True):
+def draw_section(context, layout, obj, settings, rig_settings, custom_props, section, draw_sub=True):
     sourceObj = None
     for searchObj in bpy.data.objects:
         if searchObj.data == obj:
-            sourceObj = searchObj;
+            sourceObj = searchObj
 
     if rig_settings.body_custom_properties_name_order:
         custom_properties_section = sorted([x for x in custom_props if
@@ -55,8 +55,13 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
                 box2 = box.box()
                 _label_multiline(context=context, text=section.description, parent=box2,
                                  icon=section.description_icon)
-            for prop in custom_properties_section:
+            
+            # Iterate properties in pairs
+            for i in range(0, len(custom_properties_section), 2):
                 row = box.row()
+                
+                # Draw the first property
+                prop = custom_properties_section[i]
                 if rig_settings.body_custom_properties_icons:
                     row.label(text=prop.name, icon=prop.icon if prop.icon != "NONE" else "DOT")
                 else:
@@ -65,7 +70,6 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
                     try:
                         row.prop(eval(prop.rna), prop.path, text="")
                     except:
-                        # Finally complete.
                         row.prop(settings, 'custom_properties_error_nonanimatable', icon="ERROR", text="",
                                  icon_only=True, emboss=False)
                 else:
@@ -74,6 +78,26 @@ def draw_section(context, layout, obj, settings, rig_settings, custom_props, sec
                     else:
                         row.prop(settings, 'custom_properties_error', icon="ERROR", text="", icon_only=True,
                                  emboss=False)
+
+                # Draw the second property if it exists
+                if i + 1 < len(custom_properties_section):
+                    prop = custom_properties_section[i + 1]
+                    if rig_settings.body_custom_properties_icons:
+                        row.label(text=prop.name, icon=prop.icon if prop.icon != "NONE" else "DOT")
+                    else:
+                        row.label(text=prop.name)
+                    if not prop.is_animatable:
+                        try:
+                            row.prop(eval(prop.rna), prop.path, text="")
+                        except:
+                            row.prop(settings, 'custom_properties_error_nonanimatable', icon="ERROR", text="",
+                                     icon_only=True, emboss=False)
+                    else:
+                        if prop.prop_name in sourceObj.pose.bones["master"].keys():
+                            row.prop(sourceObj.pose.bones["master"], f'["{prop.prop_name}"]', text="")
+                        else:
+                            row.prop(settings, 'custom_properties_error', icon="ERROR", text="", icon_only=True,
+                                     emboss=False)
 
         return box, not section.collapsed
 
